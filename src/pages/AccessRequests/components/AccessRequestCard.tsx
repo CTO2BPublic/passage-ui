@@ -1,11 +1,6 @@
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 import { AccessRequest, AccessRequestStatus } from 'src/types';
-import { Box, Button, Chip, Skeleton, Stack } from '@mui/material';
+import { Box, Chip, Skeleton, Stack } from '@mui/material';
 import { useDeleteAccessRequest } from 'src/hooks/services/useDeleteAccessRequest';
 import { useExpireAccessRequest } from 'src/hooks/services/useExpireAccessRequest';
 import { useApproveAccessRequest } from 'src/hooks/services/useApproveAccessRequest';
@@ -13,12 +8,11 @@ import {
   getAccessRequestStatusColor,
   getProviderStatusColor,
 } from 'src/utils/helpers';
-import CardHeaderAction from 'src/components/Card/CardHeaderAction';
 import ConfirmationDialog from 'src/components/ConfirmationDialog';
 import useConfirmationDialog from 'src/hooks/useConfirmationDialog';
 import { format } from 'date-fns';
 import CardSection from 'src/components/Card/CardSection';
-import { useState } from 'react';
+import Card from 'src/components/Card/Card.tsx';
 
 const AccessRequestCard = ({
   data,
@@ -27,12 +21,6 @@ const AccessRequestCard = ({
   data: AccessRequest | null;
   isLoading: boolean;
 }) => {
-  const [expanded, setExpanded] = useState(false);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
   const { mutate: mutateApprove, isPending: isApproveLoading } =
     useApproveAccessRequest();
   const { mutate: mutateExpire, isPending: isExpireLoading } =
@@ -52,115 +40,72 @@ const AccessRequestCard = ({
   } = useConfirmationDialog({
     onConfirm: async () => {
       if (data?.id) {
-        await mutateDelete(data.id);
+        mutateDelete(data.id);
       }
     },
   });
 
   if (isLoading || !data) {
     return (
-      <Card sx={{ width: '100%' }}>
-        <CardHeader
-          title={<Skeleton variant="text" width="40%" />}
-          subheader={<Skeleton variant="text" width="60%" />}
-        />
-        <CardActions disableSpacing>
-          <Skeleton
-            variant="rectangular"
-            width={100}
-            height={30}
-            sx={{ marginLeft: 'auto' }}
-          />
-        </CardActions>
-      </Card>
+      <Card
+        id="loading-access-request-card"
+        header={{
+          title: <Skeleton variant="text" width="40%" />,
+          tags: <Skeleton variant="rectangular" width={50} height={20} />,
+        }}
+        subheader={<Skeleton variant="text" width="60%" />}
+        menuItems={[]}
+        content={<Skeleton variant="rectangular" width="100%" height={200} />}
+        expandable={false}
+      />
     );
   }
 
   return (
-    <Card sx={{ width: '100%' }}>
-      <CardHeader
-        action={
-          <>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              width="100%"
-              alignItems="center"
-            >
-              <CardHeaderAction
-                menuItems={[
-                  {
-                    label: 'Approve',
-                    onClick: async () => await mutateApprove(data.id),
-                    hidden: data.status.status !== AccessRequestStatus.PENDING,
-                  },
-                  {
-                    label: 'Expire',
-                    onClick: async () => await mutateExpire(data.id),
-                    hidden: data.status.status !== AccessRequestStatus.APPROVED,
-                  },
-                  {
-                    label: 'Delete',
-                    onClick: openDialog,
-                    hidden: data.status.status === AccessRequestStatus.APPROVED,
-                  },
-                ]}
-                isLoading={isHeaderActionLoading}
-              />
-            </Stack>
-            <ConfirmationDialog
-              open={isOpen}
-              onConfirm={confirmAction}
-              onClose={closeDialog}
-              isLoading={isDialogLoading || isDeleteLoading}
-              title="Confirm Deletion"
-              itemName={data.roleRef.name}
-              description="Are you sure you want to delete the access request for the role?"
-            />
-          </>
-        }
-        title={
-          <Stack
-            flexDirection="row"
-            alignItems="center"
-            gap={1}
-            flexWrap="wrap"
-            justifyContent="space-between"
-          >
-            <Typography variant="h6">{data.roleRef.name}</Typography>
-            <Stack
-              gap={0.5}
-              flexDirection="row"
-              sx={{ marginTop: '0px !important' }}
-            >
-              <Chip
-                label={`Expiration time (TTL): ${data.details.ttl}`}
-                color="secondary"
-              />
+    <>
+      <Card
+        id="access-request-card"
+        header={{
+          title: data.roleRef.name,
+          tags: (
+            <>
               <Chip
                 label={data.status.status}
                 color={getAccessRequestStatusColor(data.status.status)}
+                size="small"
+                variant="outlined"
               />
-            </Stack>
-          </Stack>
-        }
+              <Chip
+                label={`Expiration time (TTL): ${data.details.ttl}`}
+                color="secondary"
+                size="small"
+              />
+            </>
+          ),
+        }}
         subheader={`Requested by ${data.status.requestedBy}`}
-      />
-
-      <CardActions disableSpacing>
-        <Button
-          size="small"
-          sx={{ marginLeft: 'auto' }}
-          onClick={handleExpandClick}
-          aria-label="Expand or collapse access request details"
-        >
-          {expanded ? 'Show less' : 'Show more'}
-        </Button>
-      </CardActions>
-
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Stack flexDirection="column" gap={4}>
+        menuItems={[
+          {
+            label: 'Approve',
+            onClick: async () => mutateApprove(data.id),
+            hidden: data.status.status !== AccessRequestStatus.PENDING,
+            disabled: isHeaderActionLoading,
+          },
+          {
+            label: 'Expire',
+            onClick: async () => mutateExpire(data.id),
+            hidden: data.status.status !== AccessRequestStatus.APPROVED,
+            disabled: isHeaderActionLoading,
+          },
+          {
+            label: 'Delete',
+            onClick: openDialog,
+            hidden: data.status.status === AccessRequestStatus.APPROVED,
+            disabled: isHeaderActionLoading,
+          },
+        ]}
+        content={
+          <>
             <CardSection
               title="Creation Timestamp"
               text={
@@ -274,10 +219,21 @@ const AccessRequestCard = ({
               }
               noDataText={'No provider usernames available'}
             />
-          </Stack>
-        </CardContent>
-      </Collapse>
-    </Card>
+          </>
+        }
+        expandable={true}
+      />
+
+      <ConfirmationDialog
+        open={isOpen}
+        onConfirm={confirmAction}
+        onClose={closeDialog}
+        isLoading={isDialogLoading || isDeleteLoading}
+        title="Confirm Deletion"
+        itemName={data.roleRef.name}
+        description="Are you sure you want to delete the access request for the role?"
+      />
+    </>
   );
 };
 

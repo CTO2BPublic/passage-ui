@@ -1,4 +1,12 @@
-import { Typography, Stack, Avatar, Link as MuiLink } from '@mui/material';
+import {
+  Typography,
+  Stack,
+  Avatar,
+  Link as MuiLink,
+  List,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import paths from 'src/utils/paths';
 import { useFetchUser } from 'src/hooks/services/useFetchUser';
@@ -47,6 +55,24 @@ const Header = () => {
       <Typography variant="h6" pr={[0, 4]}>
         PASSAGE
       </Typography>
+      {/*<img src={logoImg} alt="PASSAGE" />*/}
+      <List>
+        <ListItem
+          component={Link}
+          to={paths.accessRoles}
+          sx={getLinkStyles(paths.accessRoles)}
+        >
+          <ListItemText primary=" Access roles" />
+        </ListItem>
+        <ListItem
+          component={Link}
+          to={paths.accessRequests}
+          sx={getLinkStyles(paths.accessRequests)}
+        >
+          <ListItemText primary="Access requests" />
+        </ListItem>
+        {/* Add more menu items here */}
+      </List>
       <Stack direction="row" component="nav" spacing={[1, 2]}>
         <MuiLink
           component={Link}
@@ -76,7 +102,11 @@ const Header = () => {
             flex={[1, 'initial']}
           >
             <Avatar sx={{ bgcolor: 'primary.main', fontWeight: 'initial' }}>
-              <Typography variant="body1" color="secondary" fontWeight="bold">
+              <Typography
+                variant="body1"
+                color="primary.contrastText"
+                fontWeight="bold"
+              >
                 {getInitials(data.username)}
               </Typography>
             </Avatar>

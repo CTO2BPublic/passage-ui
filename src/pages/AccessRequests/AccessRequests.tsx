@@ -10,6 +10,7 @@ import useVisibility from 'src/hooks/useVisibility';
 import PendingAccessRequests from 'src/pages/AccessRequests/components/PendingAccessRequests.tsx';
 import { useForm, FormProvider } from 'react-hook-form';
 import ControlledSelectField from 'src/components/form/ControlledSelectField';
+import AddIcon from '@mui/icons-material/Add';
 
 const AccessRequests = () => {
   const { isVisible, show, hide } = useVisibility();
@@ -66,13 +67,14 @@ const AccessRequests = () => {
           sx={{ marginTop: '0px !important' }}
           disabled={isLoading}
           onClick={show}
+          startIcon={<AddIcon />}
         >
           New
         </Button>
       </Stack>
 
       <FormProvider {...methods}>
-        <Stack direction="row" spacing={2} mb={3}>
+        <Stack direction={['column', 'column', 'row']} gap={2} mb={3}>
           <ControlledSelectField
             name="requestedBy"
             label="Requested By"
