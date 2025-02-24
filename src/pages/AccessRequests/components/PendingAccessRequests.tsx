@@ -24,14 +24,14 @@ const PendingAccessRequests: FC<Props> = ({ data }) => {
   return (
     <div style={{ marginBottom: 24 }}>
       <Accordion
-        sx={{ backgroundColor: alpha(theme.palette.primary.main, 0.3) }}
+        sx={{ backgroundColor: alpha(theme.palette.primary.main, 0.2) }}
       >
         <AccordionSummary
           expandIcon={
             <ExpandMoreIcon sx={{ color: theme.palette.primary.main }} />
           }
-          aria-controls="panel1-content"
-          id="panel1-header"
+          aria-controls="panel-content"
+          id="panel-header"
         >
           <Stack flexDirection="row" gap={1} alignItems="center">
             <Typography component="span">Requests pending approval</Typography>

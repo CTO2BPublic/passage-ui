@@ -14,7 +14,7 @@ const CardSection = ({
   noDataText?: string;
 }) => (
   <div>
-    <Typography>{title}</Typography>
+    <Typography variant="h6">{title}</Typography>
     <Divider />
     <Box mt={2}>
       {text || content ? (

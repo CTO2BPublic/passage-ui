@@ -6,6 +6,7 @@ export interface MenuItemProps {
   label: string;
   onClick: () => void;
   hidden?: boolean;
+  disabled?: boolean;
 }
 
 export interface CardHeaderActionProps {
@@ -13,7 +14,7 @@ export interface CardHeaderActionProps {
   isLoading?: boolean;
 }
 
-const CardHeaderAction: FC<CardHeaderActionProps> = ({
+const CardHeaderSettings: FC<CardHeaderActionProps> = ({
   menuItems = [],
   isLoading = false,
 }) => {
@@ -32,6 +33,7 @@ const CardHeaderAction: FC<CardHeaderActionProps> = ({
         aria-haspopup="true"
         onClick={handleOpenMenu}
         disabled={isLoading}
+        color="inherit"
       >
         {isLoading ? <CircularProgress size={24} /> : <MoreVertIcon />}
       </IconButton>
@@ -43,13 +45,14 @@ const CardHeaderAction: FC<CardHeaderActionProps> = ({
       >
         {menuItems
           .filter(({ hidden }) => !hidden) // Filtruojame paslėptus elementus
-          .map(({ label, onClick }, index) => (
+          .map(({ label, disabled, onClick }, index) => (
             <MenuItem
               key={index}
               onClick={() => {
                 onClick();
                 handleCloseMenu();
               }}
+              disabled={disabled}
             >
               {label}
             </MenuItem>
@@ -59,4 +62,4 @@ const CardHeaderAction: FC<CardHeaderActionProps> = ({
   );
 };
 
-export default CardHeaderAction;
+export default CardHeaderSettings;
