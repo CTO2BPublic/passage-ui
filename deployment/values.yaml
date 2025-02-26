@@ -9,20 +9,8 @@ image:
 
 imagePullSecrets: []
 ##@Section: Naming
-nameOverride: passage-ui
-fullnameOverride: passage-ui
-
-##@Section: Service
-# Specify port if needed - ussually its 80 http
-service:
-  type: ClusterIP
-  name: http
-  port: 80
-
-ports:
-  - name: http
-    containerPort: 80
-    protocol: TCP
+nameOverride: passage-ui-<<._metadata.instance>>
+fullnameOverride: passage-ui-<<._metadata.instance>>
 
 ##@Section: Ingress
 ingress:
