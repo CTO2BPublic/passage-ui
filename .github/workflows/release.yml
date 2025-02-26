@@ -79,7 +79,7 @@ jobs:
               },
               "parameters": [
               {"name": "image.tag", "value": "'"$env.IMAGE_TAG"'"}
-              ]
+              ],
               "type": "app-k8s-generic",
               "helm_repo": "https://gitlab.com/cto2bprivate/main/infrastructure/public/charts/charts",
               "helm_chart": "app-k8s-generic",
