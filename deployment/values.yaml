@@ -1,18 +1,13 @@
-##@SectionDefault: Main
 replicaCount: 1
 
 image:
   repository: ghcr.io/cto2bpublic/passage-ui
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
   tag: latest
 
-imagePullSecrets: []
-##@Section: Naming
 nameOverride: passage-ui-<<._metadata.instance>>
 fullnameOverride: passage-ui-<<._metadata.instance>>
 
-##@Section: Ingress
 ingress:
   enabled: true
   annotations:
@@ -33,7 +28,6 @@ ingress:
         - "*.passage-dev.<<.dns.common_name>>"
       secretName: generic-app-secret-<<._metadata.instance>>
 
-##@Section: Resources
 resources:
   limits:
     cpu: 200m
