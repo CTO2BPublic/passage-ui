@@ -50,7 +50,7 @@ jobs:
           VALUES_YAML=$(cat deployment/values.yaml | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
 
           # Send the API request with the YAML values
-          curl -X PUT "https://api.sview.prod.manage.cto2b.eu/applications" \
+          curl -s -X PUT "https://api.sview.prod.manage.cto2b.eu/applications" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
             -d '{
@@ -80,7 +80,7 @@ jobs:
           COMMENT_BODY="Deployment successful! View your app at: https://sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}"
 
           # Make the API request to add a comment to the PR using the GITHUB_TOKEN
-          curl -X POST "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments" \
+          curl -s -X POST "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -d '{"body": "'"$COMMENT_BODY"'"}'
 
@@ -88,5 +88,5 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
         run: |
           # Call the API to delete the deployment
-          curl -X DELETE "https://api.sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}" \
+          curl -s -X DELETE "https://api.sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}" \
             -H "Authorization: Bearer ${{ secrets.API_TOKEN }}"
