@@ -56,6 +56,61 @@ jobs:
           docker tag ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} ${{ env.IMAGE_NAME }}:latest
           docker push ${{ env.IMAGE_NAME }}:latest
 
+      - name: Deploy via API (for PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          # Replace placeholders in values.yaml
+
+          # Read the YAML file as a raw string
+          VALUES_YAML=$(cat deployment/values.yaml | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
+
+          # Send the API request with the YAML values
+          curl -X PUT "https://api.sview.prod.manage.cto2b.eu/applications" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
+            -d '{
+              "metadata": {
+                "stage": "prod",
+                "environment": "shared",
+                "instance": "pr-'"$PR_NUMBER"'", 
+                "namespace": "passage-dev",
+                "cloud": "aws",
+                "group": "passage-dev"
+              },
+              "parameters": [
+              {"name": "image.tag", "value": "'"$env.IMAGE_TAG"'"}
+              ]
+              "type": "app-k8s-generic",
+              "helm_repo": "https://gitlab.com/cto2bprivate/main/infrastructure/public/charts/charts",
+              "helm_chart": "app-k8s-generic",
+              "helm_path": "",
+              "values": "'"$VALUES_YAML"'"
+            }'
+
+      - name: Add PR comment with link
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REPO_OWNER=${{ github.repository_owner }}
+          REPO_NAME=${{ github.event.repository.name }}
+
+          COMMENT_BODY="Deployment successful! View your app at: https://example.com/your-app/${PR_NUMBER}"
+
+          # Make the API request to add a comment to the PR using the GITHUB_TOKEN
+          curl -X POST "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -d '{"body": "'"$COMMENT_BODY"'"}'
+
+      - name: Delete Deployment via API (on PR Close Without Merge)
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == false
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          DEPLOYMENT_ID="prod-shared-e08a-passage-dev-pr-${PR_NUMBER}"
+
+          # Call the API to delete the deployment
+          curl -X DELETE "https://api.sview.prod.manage.cto2b.eu/applications/$DEPLOYMENT_ID" \
+            -H "Authorization: Bearer ${{ secrets.API_TOKEN }}"
+
   release:
     name: Create GitHub Release
     needs: build-and-push
