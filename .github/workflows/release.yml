@@ -72,7 +72,7 @@ jobs:
               "metadata": {
                 "stage": "prod",
                 "environment": "shared",
-                "instance": "pr-'"$env.IMAGE_TAG"'", 
+                "instance": "pr-'"${{ env.IMAGE_TAG }}"'", 
                 "namespace": "passage-dev",
                 "cloud": "aws",
                 "group": "passage-dev"
