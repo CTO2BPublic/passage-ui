@@ -39,6 +39,7 @@ jobs:
             GIT_SHA=$(git rev-parse --short HEAD)
             echo "IMAGE_TAG=pr-${PR_NUMBER}-${GIT_SHA}" >> $GITHUB_ENV
             echo "INSTANCE=pr-${PR_NUMBER}" >> $GITHUB_ENV
+            echo "APP_ID=prod-shared-e08a-passage-dev-pr-${PR_NUMBER}" >> $GITHUB_ENV
           elif [[ "${{ github.event_name }}" == "push" && "$GITHUB_REF" == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
             echo "IMAGE_TAG=${VERSION}" >> $GITHUB_ENV
@@ -94,7 +95,7 @@ jobs:
           REPO_OWNER=${{ github.repository_owner }}
           REPO_NAME=${{ github.event.repository.name }}
 
-          COMMENT_BODY="Deployment successful! View your app at: https://sview.prod.manage.cto2b.eu/applications/prod-shared-e08a-passage-dev-${env.INSTANCE}"
+          COMMENT_BODY="Deployment successful! View your app at: https://sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}"
 
           # Make the API request to add a comment to the PR using the GITHUB_TOKEN
           curl -X POST "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments" \
@@ -104,10 +105,8 @@ jobs:
       - name: Delete Deployment via API (on PR Close Without Merge)
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == false
         run: |
-          DEPLOYMENT_ID="prod-shared-e08a-passage-dev-${env.INSTANCE}"
-
           # Call the API to delete the deployment
-          curl -X DELETE "https://api.sview.prod.manage.cto2b.eu/applications/$DEPLOYMENT_ID" \
+          curl -X DELETE "https://api.sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}" \
             -H "Authorization: Bearer ${{ secrets.API_TOKEN }}"
 
   release:
