@@ -38,7 +38,7 @@ jobs:
             PR_NUMBER=${{ github.event.pull_request.number }}
             GIT_SHA=$(git rev-parse --short HEAD)
             echo "IMAGE_TAG=pr-${PR_NUMBER}-${GIT_SHA}" >> $GITHUB_ENV
-          elif [[ "${{ github.event_name }}" == "push" && startsWith(github.ref, 'refs/tags/') ]]; then
+          elif [[ "${{ github.event_name }}" == "push" && "$GITHUB_REF" == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/}
             echo "IMAGE_TAG=${VERSION}" >> $GITHUB_ENV
             echo "PUSH_LATEST=true" >> $GITHUB_ENV
