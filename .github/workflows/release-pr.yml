@@ -93,16 +93,20 @@ jobs:
           fi
 
       - name: Add PR comment with link
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
           REPO_OWNER=${{ github.repository_owner }}
           REPO_NAME=${{ github.event.repository.name }}
 
-          COMMENT_BODY="Deployment successful! View your app at: https://sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}"
+          COMMENT_BODY="Deployment successful! View your app at: https://sview.prod.manage.cto2b.eu/applications/$APP_ID"
 
-          # Make the API request to add a comment to the PR using the GITHUB_TOKEN
           curl -s -X POST "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -d '{"body": "'"$COMMENT_BODY"'"}'
+            -H "Content-Type: application/json" \
+            -d "{\"body\": \"$COMMENT_BODY\"}"
 
       - name: Delete Deployment via API
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
