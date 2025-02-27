@@ -50,7 +50,7 @@ jobs:
       - name: Deploy SVIEW
         run: |
           # Send the API request with paramters
-          curl -s -X PUT "https://api.sview.prod.manage.cto2b.eu/applications" \
+          curl -s -X PUT "https://api.sview.prod.manage.cto2b.eu/applications/$APP_ID/parameters" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
             -d '{

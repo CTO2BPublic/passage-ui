@@ -46,32 +46,51 @@ jobs:
 
       - name: Deploy SVIEW
         run: |
-          # Replace placeholders in values.yaml
+          # Check if deployment exists
+          EXISTS_RESPONSE=$(curl -s -X GET "https://api.sview.prod.manage.cto2b.eu/applications/$APP_ID/exists" \
+            -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
+            -H "Content-Type: application/json")
+
+          EXISTS=$(echo "$EXISTS_RESPONSE" | jq -r '.exists')
+
           # Read the YAML file as a raw string
           VALUES_YAML=$(cat deployment/values.yaml | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
 
-          # Send the API request with the YAML values
-          curl -s -X PUT "https://api.sview.prod.manage.cto2b.eu/applications" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
-            -d '{
-              "metadata": {
-                "stage": "prod",
-                "environment": "shared",
-                "instance": "'"${{ env.INSTANCE }}"'", 
-                "namespace": "passage-dev",
-                "cloud": "aws",
-                "group": "passage-dev-pr"
-              },
-              "parameters": [
-              {"name": "image.tag", "value": "'"${{ env.IMAGE_TAG }}"'"}
-              ],
-              "type": "app-k8s-generic",
-              "helm_repo": "https://gitlab.com/cto2bprivate/main/infrastructure/public/charts/charts",
-              "helm_chart": "app-k8s-generic",
-              "helm_path": "",
-              "values": "'"$VALUES_YAML"'"
-            }'
+          if [[ "$EXISTS" == "true" ]]; then
+            echo "🔄 Application exists, updating deployment..."
+            curl -s -X PATCH "https://api.sview.prod.manage.cto2b.eu/applications/$APP_ID/parameters" \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
+              -d '{
+                "parameters": [
+                  {"name": "image.tag", "value": "'"${{ env.IMAGE_TAG }}"'"}
+                ],
+                "values": "'"$VALUES_YAML"'"
+              }'
+          else
+            echo "🚀 Application does not exist, creating a new deployment..."
+            curl -s -X PUT "https://api.sview.prod.manage.cto2b.eu/applications" \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
+              -d '{
+                "metadata": {
+                  "stage": "prod",
+                  "environment": "shared",
+                  "instance": "'"${{ env.INSTANCE }}"'", 
+                  "namespace": "passage-dev",
+                  "cloud": "aws",
+                  "group": "passage-dev-pr"
+                },
+                "parameters": [
+                  {"name": "image.tag", "value": "'"${{ env.IMAGE_TAG }}"'"}
+                ],
+                "type": "app-k8s-generic",
+                "helm_repo": "https://gitlab.com/cto2bprivate/main/infrastructure/public/charts/charts",
+                "helm_chart": "app-k8s-generic",
+                "helm_path": "",
+                "values": "'"$VALUES_YAML"'"
+              }'
+          fi
 
       - name: Add PR comment with link
         run: |
