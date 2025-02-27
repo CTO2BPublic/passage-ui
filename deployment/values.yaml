@@ -1,0 +1,36 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/cto2bpublic/passage-ui
+  pullPolicy: IfNotPresent
+  tag: latest
+
+nameOverride: passage-ui-<<._metadata.instance>>
+fullnameOverride: passage-ui-<<._metadata.instance>>
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: cto2b-dns
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  hosts:
+    - host: <<._metadata.instance>>.passage-dev.<<.dns.common_name>>
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - "*.passage-dev.<<.dns.common_name>>"
+      secretName: generic-app-secret-ui
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+metadata: {}
