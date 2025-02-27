@@ -105,10 +105,10 @@ jobs:
           COMMENT_BODY=$(cat <<EOF
           🚀 Deployment successful!  
           Manage your app at:  
-          🔗 [Management Panel](https://sview.prod.manage.cto2b.eu/applications/${{ env.APP_ID }})  
+          [SVIEW Management Panel](https://sview.prod.manage.cto2b.eu/applications/${{ env.APP_ID }})  
 
-          🖥️ View the deployed UI:  
-          🔗 [Live Preview](https://pr-$PR_NUMBER.passage-dev.shared.prod.cto2b.eu/access-requests)  
+          View the deployed UI:  
+          https://pr-$PR_NUMBER.passage-dev.shared.prod.cto2b.eu
 
           ⚠️ **Note:** This deployment will be **automatically destroyed** once the PR is merged or closed.
           EOF
