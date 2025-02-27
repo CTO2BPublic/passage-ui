@@ -47,7 +47,7 @@ jobs:
       - name: Deploy SVIEW
         run: |
           # Check if deployment exists
-          EXISTS_RESPONSE=$(curl -s -X GET "https://api.sview.prod.manage.cto2b.eu/applications/$APP_ID/exists" \
+          EXISTS_RESPONSE=$(curl -s -X GET "https://api.sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}/exists" \
             -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
             -H "Content-Type: application/json")
 
@@ -58,7 +58,7 @@ jobs:
 
           if [[ "$EXISTS" == "true" ]]; then
             echo "🔄 Application exists, updating deployment..."
-            curl -s -X PATCH "https://api.sview.prod.manage.cto2b.eu/applications/$APP_ID/parameters" \
+            curl -s -X PUT "https://api.sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}/parameters" \
               -H "Content-Type: application/json" \
               -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
               -d '{
@@ -101,7 +101,7 @@ jobs:
           REPO_OWNER=${{ github.repository_owner }}
           REPO_NAME=${{ github.event.repository.name }}
 
-          COMMENT_BODY="Deployment successful! View your app at: https://sview.prod.manage.cto2b.eu/applications/$APP_ID"
+          COMMENT_BODY="Deployment successful! View your app at: https://sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}"
 
           curl -s -X POST "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
