@@ -95,8 +95,6 @@ const theme = createTheme({
         root: {
           boxShadow: 'none',
           backgroundImage: 'none',
-
-          // border: '1px solid #1d212d',
         },
       },
     },
@@ -172,6 +170,13 @@ const theme = createTheme({
         },
       },
     },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#17181c80',
+        },
+      },
+    },
     MuiCardHeader: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -195,6 +200,22 @@ const theme = createTheme({
           boxSizing: 'border-box',
           borderRight: 'none',
           boxShadow: 'none',
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          '& .MuiInputAdornment-root svg': {
+            transition: 'fill 0.1s ease-in-out',
+            fill: '#FFFFFF',
+          },
+          '&:hover .MuiInputAdornment-root svg': {
+            fill: '#A8FF5C',
+          },
+          '&.Mui-focused .MuiInputAdornment-root svg': {
+            fill: '#A8FF5C',
+          },
         },
       },
     },

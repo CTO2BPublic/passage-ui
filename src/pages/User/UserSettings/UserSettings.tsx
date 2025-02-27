@@ -14,6 +14,20 @@ import { useFetchUser } from 'src/hooks/services/useFetchUser';
 import { useUpdateUserSettings } from 'src/hooks/services/useUpdateUserSettings';
 import { useEffect } from 'react';
 import CardActions from '@mui/material/CardActions';
+import AwsIcon from 'src/assets/icons/AwsIcon';
+import GitlabIcon from 'src/assets/icons/GitlabIcon';
+import GoogleIcon from 'src/assets/icons/GoogleIcon';
+import TeleportIcon from 'src/assets/icons/TeleportIcon';
+import AzureIcon from 'src/assets/icons/AzureIcon';
+import { Provider } from 'src/types';
+
+const providerIcon = {
+  [Provider.AWS]: <AwsIcon />,
+  [Provider.GITLAB]: <GitlabIcon />,
+  [Provider.AZURE]: <AzureIcon />,
+  [Provider.GOOGLE]: <GoogleIcon />,
+  [Provider.TELEPORT]: <TeleportIcon />,
+};
 
 const UserSettings = () => {
   const { data, isLoading } = useFetchUser();
@@ -62,7 +76,18 @@ const UserSettings = () => {
         User settings
       </Typography>
       <Card>
-        {data?.username && <CardHeader title={`Username: ${data.username}`} />}
+        {data?.username && (
+          <CardHeader
+            title={
+              <>
+                Username:{' '}
+                <Typography color="primary" component="span" fontSize="inherit">
+                  {data.username}
+                </Typography>
+              </>
+            }
+          />
+        )}
         <CardContent>
           <FormProvider {...methods}>
             <form
@@ -81,6 +106,7 @@ const UserSettings = () => {
                           provider.charAt(0).toUpperCase() + provider.slice(1)
                         } Username`}
                         disabled={isLoading || isSubmitLoading}
+                        startIcon={providerIcon[provider as Provider]}
                       />
                     </Box>
                   ))}

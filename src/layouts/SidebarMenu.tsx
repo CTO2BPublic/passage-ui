@@ -61,12 +61,12 @@ const SidebarMenu: FC<Props> = ({ data }) => {
       }}
     >
       <Toolbar>
-        <Box sx={{ flexGrow: 1, px: 1.5 }}>
+        <Box sx={{ flexGrow: 1, pt: 2 }}>
           <Link to="/">
             <img
               src={logo}
               alt="Logo"
-              style={{ height: 20, cursor: 'pointer' }}
+              // style={{ height: 20, cursor: 'pointer' }}
             />
           </Link>
         </Box>
