@@ -102,7 +102,17 @@ jobs:
           REPO_OWNER=${{ github.repository_owner }}
           REPO_NAME=${{ github.event.repository.name }}
 
-          COMMENT_BODY="Deployment successful! View your app at: https://sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}"
+          COMMENT_BODY=$(cat <<EOF
+🚀 Deployment successful!  
+Manage your app at:  
+🔗 [Management Panel](https://sview.prod.manage.cto2b.eu/applications/${{ env.APP_ID }})  
+
+🖥️ View the deployed UI:  
+🔗 [Live Preview](https://pr-$PR_NUMBER.passage-dev.shared.prod.cto2b.eu/access-requests)  
+
+⚠️ **Note:** This deployment will be **automatically destroyed** once the PR is merged or closed.
+EOF
+          )
 
           curl -s -X POST "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
