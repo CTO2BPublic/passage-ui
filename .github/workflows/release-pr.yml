@@ -114,10 +114,12 @@ jobs:
           EOF
           )
 
+          JSON_BODY=$(jq -n --arg body "$COMMENT_BODY" '{body: $body}')
+
           curl -s -X POST "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"body\": \"$COMMENT_BODY\"}"
+            -d "$JSON_BODY"
 
       - name: Delete Deployment via API
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == true

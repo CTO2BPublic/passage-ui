@@ -60,18 +60,6 @@ jobs:
               ]
             }'
 
-      - name: Add PR comment with link
-        run: |
-          REPO_OWNER=${{ github.repository_owner }}
-          REPO_NAME=${{ github.event.repository.name }}
-
-          COMMENT_BODY="Deployment successful! View your app at: https://sview.prod.manage.cto2b.eu/applications/${{env.APP_ID}}"
-
-          # Make the API request to add a comment to the PR using the GITHUB_TOKEN
-          curl -s -X POST "https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/issues/$PR_NUMBER/comments" \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -d '{"body": "'"$COMMENT_BODY"'"}'
-
   release:
     name: Create GitHub Release
     needs: build-and-push
