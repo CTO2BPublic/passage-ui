@@ -63,7 +63,8 @@ jobs:
               -H "Authorization: Bearer ${{ secrets.API_TOKEN }}" \
               -d '{
                 "parameters": [
-                  {"name": "image.tag", "value": "'"${{ env.IMAGE_TAG }}"'"}
+                  {"name": "image.tag", "value": "'"${{ env.IMAGE_TAG }}"'"},
+                  {"name": "github.author", "value": "'"${{ github.event.pusher.name }}"'"}
                 ],
                 "values": "'"$VALUES_YAML"'"
               }'
@@ -82,7 +83,8 @@ jobs:
                   "group": "passage-dev-pr"
                 },
                 "parameters": [
-                  {"name": "image.tag", "value": "'"${{ env.IMAGE_TAG }}"'"}
+                  {"name": "image.tag", "value": "'"${{ env.IMAGE_TAG }}"'"},
+                  {"name": "github.author", "value": "'"${{ github.event.pusher.name }}"'"}
                 ],
                 "type": "app-k8s-generic",
                 "helm_repo": "https://gitlab.com/cto2bprivate/main/infrastructure/public/charts/charts",
