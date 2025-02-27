@@ -84,7 +84,7 @@ jobs:
                 },
                 "parameters": [
                   {"name": "image.tag", "value": "'"${{ env.IMAGE_TAG }}"'"},
-                  {"name": "github.author", "value": "'"${{ github.event.head_commit.author.name  }}"'"}
+                  {"name": "github.author", "value": "'"${{ github.event.pull_request.user.login }}"'"}
                 ],
                 "type": "app-k8s-generic",
                 "helm_repo": "https://gitlab.com/cto2bprivate/main/infrastructure/public/charts/charts",
@@ -95,7 +95,6 @@ jobs:
           fi
 
       - name: Add PR comment with link
-        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
