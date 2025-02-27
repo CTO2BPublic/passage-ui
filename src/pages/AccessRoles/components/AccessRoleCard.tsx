@@ -25,7 +25,7 @@ const AccessRoleCard = ({
         }}
         subheader={<Skeleton variant="text" width="60%" />}
         menuItems={[]}
-        content={<Skeleton variant="rectangular" width="100%" height={200} />}
+        content={<Skeleton variant="rectangular" width="100%" height={100} />}
         expandable={false}
       />
     );

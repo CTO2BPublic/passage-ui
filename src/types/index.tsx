@@ -66,8 +66,20 @@ export type AccessRequest = {
   };
 };
 
+export enum Provider {
+  AWS = 'aws',
+  AZURE = 'azure',
+  GITLAB = 'gitlab',
+  GOOGLE = 'google',
+  TELEPORT = 'teleport',
+}
+
 export type User = {
   id: string;
   username: string;
-  settings: { providerUsernames?: Record<string, string> };
+  settings: {
+    providerUsernames: {
+      [key in Provider]: string;
+    };
+  };
 };
