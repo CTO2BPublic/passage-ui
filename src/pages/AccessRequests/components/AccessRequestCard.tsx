@@ -223,6 +223,7 @@ const AccessRequestCard = ({
           </>
         }
         expandable={true}
+        isMenuLoading={isHeaderActionLoading}
       />
 
       <ConfirmationDialog

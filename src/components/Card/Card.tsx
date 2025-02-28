@@ -24,6 +24,7 @@ type Props = {
   }[];
   content: ReactNode;
   expandable?: boolean;
+  isMenuLoading?: boolean;
 };
 
 const Card: FC<Props> = ({
@@ -33,6 +34,7 @@ const Card: FC<Props> = ({
   menuItems = [],
   content,
   expandable = false,
+  isMenuLoading = false,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -75,7 +77,10 @@ const Card: FC<Props> = ({
             id={`${id}-header`}
           >
             {menuItems.length > 0 && (
-              <CardHeaderSettings menuItems={menuItems} />
+              <CardHeaderSettings
+                menuItems={menuItems}
+                isLoading={isMenuLoading}
+              />
             )}
             {header.title && (
               <Typography variant="h5">{header.title}</Typography>
