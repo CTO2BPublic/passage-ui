@@ -95,7 +95,7 @@ const UserSettings = () => {
                 mutate(values, { onSuccess: () => reset(values) });
               })}
             >
-              <Stack flexDirection="column" mt={2} mb={5} gap={3}>
+              <Stack flexDirection="column" mt={2} mb={5} gap={4}>
                 {!!providerUsernamesValues &&
                   Object.entries(providerUsernamesValues).map(([provider]) => (
                     <Box key={provider}>

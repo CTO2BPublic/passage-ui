@@ -63,11 +63,7 @@ const SidebarMenu: FC<Props> = ({ data }) => {
       <Toolbar>
         <Box sx={{ flexGrow: 1, pt: 2 }}>
           <Link to="/">
-            <img
-              src={logo}
-              alt="Logo"
-              // style={{ height: 20, cursor: 'pointer' }}
-            />
+            <img src={logo} alt="Logo" />
           </Link>
         </Box>
       </Toolbar>
@@ -79,6 +75,7 @@ const SidebarMenu: FC<Props> = ({ data }) => {
             selected={isActive(item.path)}
             component={Link}
             to={item.path}
+            sx={{ mb: 1 }}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
