@@ -90,6 +90,15 @@ const theme = createTheme({
     borderRadius: 12,
   },
   components: {
+    MuiToolbar: {
+      styleOverrides: {
+        root: {
+          '.MuiAppBar-root &': {
+            backgroundColor: '#121317',
+          },
+        },
+      },
+    },
     MuiPaper: {
       styleOverrides: {
         root: {
@@ -152,12 +161,19 @@ const theme = createTheme({
     MuiMenuItem: {
       styleOverrides: {
         root: {
+          margin: '0 8px',
+          borderRadius: '8px',
+          '&:not(:last-child)': {
+            marginBottom: '4px',
+          },
           '&:hover': {
-            color: '#121317',
+            color: '#A8FF5C',
+            backgroundColor: '#121317',
           },
           '&.Mui-selected': {
+            color: '#A8FF5C',
             '&:hover': {
-              color: 'inherit',
+              color: '#A8FF5C',
             },
           },
         },
@@ -173,7 +189,7 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          backgroundColor: '#17181c80',
+          backgroundColor: '#17181ccc',
         },
       },
     },
