@@ -90,6 +90,13 @@ const theme = createTheme({
     borderRadius: 12,
   },
   components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          boxShadow: 'none',
+        },
+      },
+    },
     MuiToolbar: {
       styleOverrides: {
         root: {

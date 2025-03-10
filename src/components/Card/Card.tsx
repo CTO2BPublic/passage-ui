@@ -70,21 +70,26 @@ const Card: FC<Props> = ({
         }
         title={
           <Stack
-            flexDirection="row"
-            alignItems="center"
+            flexWrap="wrap"
+            flexDirection={['column', 'row']}
+            alignItems={'center'}
             gap={1}
             pb={1}
             id={`${id}-header`}
           >
-            {menuItems.length > 0 && (
-              <CardHeaderSettings
-                menuItems={menuItems}
-                isLoading={isMenuLoading}
-              />
-            )}
-            {header.title && (
-              <Typography variant="h5">{header.title}</Typography>
-            )}
+            <Stack gap={1} flexDirection="row" alignItems={'center'}>
+              {menuItems.length > 0 && (
+                <Box>
+                  <CardHeaderSettings
+                    menuItems={menuItems}
+                    isLoading={isMenuLoading}
+                  />
+                </Box>
+              )}
+              {header.title && (
+                <Typography variant="h5">{header.title}</Typography>
+              )}
+            </Stack>
             {header.tags && (
               <Stack gap={1} flexDirection="row">
                 {header.tags}
