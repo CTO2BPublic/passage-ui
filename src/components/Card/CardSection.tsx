@@ -13,7 +13,7 @@ const CardSection = ({
   content?: ReactNode;
   noDataText?: string;
 }) => (
-  <div>
+  <Box ml={2}>
     <Typography variant="h6">{title}</Typography>
     <Divider />
     <Box mt={2}>
@@ -26,7 +26,7 @@ const CardSection = ({
         <Typography variant="body2">{noDataText}</Typography>
       )}
     </Box>
-  </div>
+  </Box>
 );
 
 export default CardSection;
