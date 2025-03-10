@@ -100,7 +100,6 @@ const UserSettings = () => {
                   Object.entries(providerUsernamesValues).map(([provider]) => (
                     <Box key={provider}>
                       <ControlledTextField
-                        size="small"
                         name={`providerUsernames.${provider}`}
                         label={`${
                           provider.charAt(0).toUpperCase() + provider.slice(1)

@@ -3,7 +3,7 @@ import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
-import { Button, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import { FC, ReactNode, useState } from 'react';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -92,7 +92,7 @@ const Card: FC<Props> = ({
             )}
           </Stack>
         }
-        subheader={subheader}
+        subheader={<Box ml={2}>{subheader}</Box>}
       />
 
       {expandable ? (
