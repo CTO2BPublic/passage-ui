@@ -72,8 +72,7 @@ const Card: FC<Props> = ({
           <Stack
             flexWrap="wrap"
             flexDirection={['column', 'row']}
-            alignItems={'center'}
-            gap={1}
+            // alignItems={['initial', 'center']}
             pb={1}
             id={`${id}-header`}
           >
@@ -91,7 +90,7 @@ const Card: FC<Props> = ({
               )}
             </Stack>
             {header.tags && (
-              <Stack gap={1} flexDirection="row">
+              <Stack gap={1} flexDirection="row" ml={2}>
                 {header.tags}
               </Stack>
             )}

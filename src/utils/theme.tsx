@@ -205,8 +205,10 @@ const theme = createTheme({
         root: ({ theme }) => ({
           display: 'flex',
           flexDirection: 'column',
+          alignItems: 'start',
           [theme.breakpoints.up('md')]: {
             flexDirection: 'row',
+            alignItems: 'center',
           },
         }),
         action: ({ theme }) => ({
