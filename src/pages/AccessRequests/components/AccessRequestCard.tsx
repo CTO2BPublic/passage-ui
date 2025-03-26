@@ -88,7 +88,9 @@ const AccessRequestCard = ({
           {
             label: 'Approve',
             onClick: async () => mutateApprove(data.id),
-            hidden: data.status.status !== AccessRequestStatus.PENDING,
+            hidden:
+              data.status.status !== AccessRequestStatus.PENDING &&
+              data.status.status !== AccessRequestStatus.APPROVED,
             disabled: isHeaderActionLoading,
           },
           {
