@@ -83,3 +83,9 @@ export type User = {
     };
   };
 };
+
+export type UsersRoleMapping = {
+  id: string;
+  username: string;
+  roles?: string[];
+};

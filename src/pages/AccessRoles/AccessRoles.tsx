@@ -5,6 +5,7 @@ import AccessRoleCard from 'src/pages/AccessRoles/components/AccessRoleCard';
 import useSearch from 'src/hooks/useSearch';
 import { AccessRole } from 'src/types';
 import Search from 'src/components/Search';
+import UserRoleFiler from 'src/pages/AccessRoles/components/UserRoleFilter.tsx';
 
 const AccessRoles: FC = (): ReactElement => {
   const { data, isLoading } = useFetchAccessRoles();
@@ -27,6 +28,7 @@ const AccessRoles: FC = (): ReactElement => {
         gap={2}
       >
         <Search query={query} setQuery={setQuery} isLoading={isLoading} />
+        <UserRoleFiler roles={data} />
       </Stack>
 
       <Stack spacing={2}>

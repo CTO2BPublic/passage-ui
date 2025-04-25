@@ -5,6 +5,7 @@ export const baseURL =
 
 const endpoints = {
   user: '/user/profile',
+  users: '/users/role-mappings',
   userSettings: '/user/profile/settings',
   accessRoles: '/access/roles',
   accessRequests: '/access/requests',
