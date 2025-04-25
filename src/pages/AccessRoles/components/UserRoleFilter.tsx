@@ -18,7 +18,7 @@ import { AccessRole } from 'src/types';
 import { useFetchUsersRoleMapping } from 'src/hooks/services/useFetchUsersRoleMapping.tsx'; // Ensure AccessUser is defined
 
 type Props = {
-  roles: AccessRole[];
+  roles?: AccessRole[];
 };
 
 const UserRoleFilter: React.FC<Props> = ({ roles }) => {
