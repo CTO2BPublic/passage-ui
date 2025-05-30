@@ -31,12 +31,12 @@ const AccessRequests = () => {
   const filteredRequests = filteredData?.filter((item) => {
     const { requestedBy, approvedBy, role, status } = filters;
     const requestedByMatch = requestedBy
-      ? item.status.requestedBy.includes(requestedBy)
+      ? item.status.requestedBy === requestedBy
       : true;
     const approvedByMatch = approvedBy
-      ? item.status.approvedBy.includes(approvedBy)
+      ? item.status.approvedBy === approvedBy
       : true;
-    const roleMatch = role ? item.roleRef?.name.includes(role) : true;
+    const roleMatch = role ? item.roleRef?.name === role : true;
     const statusMatch = status ? item.status.status === status : true;
 
     return requestedByMatch && approvedByMatch && roleMatch && statusMatch;
