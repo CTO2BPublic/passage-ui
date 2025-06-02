@@ -42,7 +42,13 @@ const schema = yup.object().shape({
   details: yup.object().shape({
     attributes: yup.object(),
     justification: yup.string().required('This field is required'),
-    ttl: yup.string().required('This field is required'),
+    ttl: yup
+      .string()
+      .required('This field is required')
+      .matches(
+        /^\d+h$/,
+        'This field must be a number followed by "h", e.g., 24h',
+      ),
   }),
   roleRef: yup.object().shape({
     name: yup.string().required('This field is required'),
