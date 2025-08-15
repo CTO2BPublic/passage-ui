@@ -89,3 +89,8 @@ export type UsersRoleMapping = {
   username: string;
   roles?: string[];
 };
+
+export type Event = {
+  id: string;
+  createdAt: string;
+};

@@ -12,6 +12,8 @@ const endpoints = {
   accessRequest: (id: string) => `/access/requests/${id}`,
   accessRequestApprove: (id: string) => `/access/requests/${id}/approve`,
   accessRequestExpire: (id: string) => `/access/requests/${id}/expire`,
+  events: '/events',
+  event: (id: string) => `/events/${id}`,
 };
 
 export default endpoints;

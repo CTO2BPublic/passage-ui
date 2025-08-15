@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
 import VpnKeyTwoToneIcon from '@mui/icons-material/VpnKeyTwoTone';
+import DashboardTwoToneIcon from '@mui/icons-material/DashboardTwoTone';
 import logo from 'src/assets/img/logo/logo.svg';
 import paths from 'src/utils/paths';
 import { User } from 'src/types';
@@ -24,6 +25,11 @@ interface MenuItemType {
 }
 
 const menu: MenuItemType[] = [
+  {
+    text: 'Dashboard',
+    path: paths.dashboard,
+    icon: <DashboardTwoToneIcon />,
+  },
   {
     text: 'Access roles',
     path: paths.accessRoles,
