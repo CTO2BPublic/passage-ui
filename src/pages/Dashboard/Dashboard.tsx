@@ -1,49 +1,64 @@
-import { useFetchEvent } from 'src/hooks/services/useFetchEvent';
+import React, { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
-import DataTable from 'src/components/table/DataTable';
-import { Box, Card, Skeleton, Stack, Typography } from '@mui/material';
 import { format } from 'date-fns';
-import { type Event } from 'src/types';
+import { Box, Card, Skeleton, Stack, Typography } from '@mui/material';
+import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone';
+
+import { type ActivityLog } from 'src/types';
+import { useFetchActivityLogs } from 'src/hooks/services/useFetchActivityLogs.tsx';
+import { useFetchEvent } from 'src/hooks/services/useFetchEvent';
 import { useFetchAccessRoles } from 'src/hooks/services/useFetchAccessRoles.tsx';
 import { useFetchAccessRequests } from 'src/hooks/services/useFetchAccessRequests.tsx';
-import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone';
-import useSearch from 'src/hooks/useSearch.tsx';
-import Search from 'src/components/Search.tsx';
-import { useState } from 'react';
-import { useFetchEvents } from 'src/hooks/services/useFetchEvents.tsx';
 
-const columns: ColumnDef<Event>[] = [
+import DataTable from 'src/components/table/DataTable';
+import Modal from 'src/components/Modal';
+import Search from 'src/components/Search.tsx';
+import useSearch from 'src/hooks/useSearch.tsx';
+
+const columns: ColumnDef<ActivityLog>[] = [
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'date',
     header: () => <Box pl={1.5}>Date</Box>,
-    cell: ({ row }) => {
-      return (
-        <span>
-          {row?.original.createdAt
-            ? format(new Date(row.original.createdAt), 'yyyy-MM-dd HH:mm')
-            : ''}
-        </span>
-      );
-    },
+    cell: ({ row }) => (
+      <span>
+        {row?.original.date
+          ? format(new Date(row.original.date), 'yyyy-MM-dd HH:mm')
+          : ''}
+      </span>
+    ),
   },
-  { accessorKey: 'attributes.author', header: 'Author' },
+  { accessorKey: 'role', header: 'Role' },
   { accessorKey: 'message', header: 'Message' },
+  { accessorKey: 'raisedBy', header: 'Raised by' },
+  { accessorKey: 'approvedBy', header: 'Approved by' },
+  { accessorKey: 'id', header: 'ID' },
 ];
 
-const EventItem = ({ id }) => {
+const EventItem = ({ id }: { id: string }) => {
   const { data, isLoading } = useFetchEvent(id);
-  console.log(data);
+
   if (isLoading) {
     return <Skeleton variant="text" width="100%" />;
   }
+
   return (
-    <Typography variant="body2" color="textSecondary">
-      <strong>Event id:</strong> {id}
-    </Typography>
+    <Stack gap={1}>
+      <Typography variant="body2" color="textSecondary">
+        <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
+          {JSON.stringify(data, null, 2)}
+        </pre>
+      </Typography>
+    </Stack>
   );
 };
 
-const DashboardCard = ({ title, count, icon }) => {
+type CardProps = {
+  title: string;
+  count: number;
+  icon: React.ReactNode;
+};
+
+const DashboardCard: React.FC<CardProps> = ({ title, count, icon }) => {
   return (
     <Card sx={{ p: 2, flex: '1' }}>
       <Stack gap={2} flexDirection="row" alignItems="center">
@@ -68,13 +83,14 @@ const DashboardCard = ({ title, count, icon }) => {
 
 const Dashboard = () => {
   const [query, setQuery] = useState<string>('');
+  const [selectedEvent, setSelectedEvent] = useState<ActivityLog | null>(null);
 
-  const { data, isLoading } = useFetchEvents();
+  const { data, isLoading } = useFetchActivityLogs();
   const { data: roles, isLoading: isRolesLoading } = useFetchAccessRoles();
   const { data: requests, isLoading: isRequestsLoading } =
     useFetchAccessRequests();
 
-  const filteredData = useSearch<Event>(data, query);
+  const filteredData = useSearch<ActivityLog>(data, query);
 
   const loading = isLoading || isRolesLoading || isRequestsLoading;
   const noData = !loading && filteredData?.length === 0;
@@ -107,19 +123,19 @@ const Dashboard = () => {
             />
             <DashboardCard
               title="Users"
-              count={requests?.length || 0}
+              count={roles?.length || 0}
               icon={<PeopleAltTwoToneIcon />}
             />
             <DashboardCard
               title={`Role "Test"`}
-              count={requests?.length || 0}
+              count={roles?.length || 0}
               icon={<PeopleAltTwoToneIcon />}
             />
           </>
         )}
       </Stack>
 
-      <Typography variant="h2">Events</Typography>
+      <Typography variant="h2">Activity logs</Typography>
 
       <Search query={query} setQuery={setQuery} isLoading={isLoading} />
 
@@ -141,9 +157,20 @@ const Dashboard = () => {
         <DataTable
           columns={columns}
           data={filteredData || []}
-          renderSubComponent={(row) => <EventItem id={row.id} />}
+          onRowClick={(row) => setSelectedEvent(row)}
         />
       )}
+
+      <Modal
+        open={!!selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+        title="Event Details"
+        copyText={
+          selectedEvent ? JSON.stringify(selectedEvent, null, 2) : undefined
+        }
+      >
+        {selectedEvent && <EventItem id={selectedEvent.eventId} />}
+      </Modal>
     </Stack>
   );
 };

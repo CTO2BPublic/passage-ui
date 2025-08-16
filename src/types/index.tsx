@@ -90,6 +90,19 @@ export type UsersRoleMapping = {
   roles?: string[];
 };
 
+export type ActivityLog = {
+  id: string;
+  date: string;
+  severity: string;
+  raisedBy: string;
+  approvedBy: string;
+  type: string;
+  role: string;
+  message: string;
+  requestId: string;
+  eventId: string;
+};
+
 export type Event = {
   id: string;
   createdAt: string;

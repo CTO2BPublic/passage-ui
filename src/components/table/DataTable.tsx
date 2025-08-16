@@ -1,8 +1,6 @@
-import React from 'react';
 import {
   useReactTable,
   getCoreRowModel,
-  getExpandedRowModel,
   flexRender,
   ColumnDef,
 } from '@tanstack/react-table';
@@ -13,45 +11,25 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  IconButton,
   Stack,
   Card,
-  Box,
-  styled,
 } from '@mui/material';
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 
 type DataTableProps<T extends object> = {
   columns: ColumnDef<T, unknown>[];
   data: T[];
-  renderSubComponent?: (row: T) => React.ReactNode;
+  onRowClick?: (row: T) => void;
 };
-
-const BodyTableRow = styled(TableRow)(() => ({
-  '&:last-of-type': {
-    '& td': {
-      borderBottom: 'none',
-    },
-  },
-}));
 
 const DataTable = <T extends object>({
   columns,
   data,
-  renderSubComponent,
+  onRowClick,
 }: DataTableProps<T>) => {
-  const [expanded, setExpanded] = React.useState<Record<string, boolean>>({});
-
   const table = useReactTable({
     data,
     columns,
-    state: { expanded },
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getRowCanExpand: () => !!renderSubComponent,
   });
 
   return (
@@ -61,7 +39,12 @@ const DataTable = <T extends object>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableCell key={header.id}>
+                <TableCell
+                  key={header.id}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                  }}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -75,39 +58,20 @@ const DataTable = <T extends object>({
         </TableHead>
         <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <React.Fragment key={row.id}>
-              <BodyTableRow>
-                {row.getVisibleCells().map((cell, idx) => (
-                  <TableCell key={cell.id}>
-                    <Stack flexDirection="row" gap={1}>
-                      {idx === 0 && renderSubComponent && (
-                        <Box>
-                          <IconButton onClick={row.getToggleExpandedHandler()}>
-                            {row.getIsExpanded() ? (
-                              <KeyboardArrowUp />
-                            ) : (
-                              <KeyboardArrowDown />
-                            )}
-                          </IconButton>
-                        </Box>
-                      )}
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </Stack>
-                  </TableCell>
-                ))}
-              </BodyTableRow>
-
-              {row.getIsExpanded() && renderSubComponent && (
-                <TableRow>
-                  <TableCell colSpan={row.getVisibleCells().length}>
-                    {renderSubComponent(row.original)}
-                  </TableCell>
-                </TableRow>
-              )}
-            </React.Fragment>
+            <TableRow
+              key={row.id}
+              hover
+              onClick={() => onRowClick?.(row.original)}
+              sx={{ cursor: onRowClick ? 'pointer' : 'default' }}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  <Stack flexDirection="row" gap={1}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </Stack>
+                </TableCell>
+              ))}
+            </TableRow>
           ))}
         </TableBody>
       </Table>

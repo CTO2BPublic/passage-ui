@@ -12,7 +12,7 @@ const endpoints = {
   accessRequest: (id: string) => `/access/requests/${id}`,
   accessRequestApprove: (id: string) => `/access/requests/${id}/approve`,
   accessRequestExpire: (id: string) => `/access/requests/${id}/expire`,
-  events: '/events',
+  activityLogs: '/activity-logs',
   event: (id: string) => `/events/${id}`,
 };
 
