@@ -1,4 +1,10 @@
 export type AccessRole = {
+  annotations: {
+    'dashboard.passage.io/dataType': 'sum' | 'avg' | 'count';
+    'dashboard.passage.io/enabled': 'true' | 'false';
+    'dashboard.passage.io/icon': string;
+    'dashboard.passage.io/widgetType': 'statCard' | 'chart' | 'table';
+  };
   name: string;
   description: string;
   tags: string[];
@@ -88,4 +94,22 @@ export type UsersRoleMapping = {
   id: string;
   username: string;
   roles?: string[];
+};
+
+export type ActivityLog = {
+  id: string;
+  date: string;
+  severity: string;
+  raisedBy: string;
+  approvedBy: string;
+  type: string;
+  role: string;
+  message: string;
+  requestId: string;
+  eventId: string;
+};
+
+export type Event = {
+  id: string;
+  createdAt: string;
 };

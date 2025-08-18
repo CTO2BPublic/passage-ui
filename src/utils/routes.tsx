@@ -37,6 +37,8 @@ const Loadable = <P extends object>(
   return ComponentWithDisplayName;
 };
 
+const Dashboard = Loadable(lazy(() => import('src/pages/Dashboard/Dashboard')));
+
 const AccessRoles = Loadable(
   lazy(() => import('src/pages/AccessRoles/AccessRoles')),
 );
@@ -52,6 +54,10 @@ const UserSettings = Loadable(
 const NotFoundPage = Loadable(lazy(() => import('src/pages/NotFound')));
 
 const innerRoutes = [
+  {
+    path: paths.dashboard,
+    element: <Dashboard />,
+  },
   {
     path: paths.userSettings,
     element: <UserSettings />,
@@ -74,7 +80,7 @@ const routes = (): RouteObject[] => {
       children: [
         {
           path: '/',
-          element: <Navigate to={paths.accessRequests} replace />,
+          element: <Navigate to={paths.dashboard} replace />,
         },
         ...innerRoutes,
       ],

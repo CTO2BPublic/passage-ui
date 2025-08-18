@@ -13,7 +13,7 @@ type Props = {
   id: string;
   header: {
     title: ReactNode;
-    tags: ReactNode;
+    tags?: ReactNode;
   };
   subheader?: ReactNode;
   menuItems?: {
