@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import { Box, Card, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone';
 
-import { type ActivityLog } from 'src/types';
+import { AccessRequestStatus, type ActivityLog } from 'src/types';
 import { useFetchActivityLogs } from 'src/hooks/services/useFetchActivityLogs.tsx';
-import { useFetchEvent } from 'src/hooks/services/useFetchEvent';
 import { useFetchAccessRoles } from 'src/hooks/services/useFetchAccessRoles.tsx';
 import { useFetchAccessRequests } from 'src/hooks/services/useFetchAccessRequests.tsx';
+import ManageAccountsTwoToneIcon from '@mui/icons-material/ManageAccountsTwoTone';
+import VpnKeyTwoToneIcon from '@mui/icons-material/VpnKeyTwoTone';
 
 import DataTable from 'src/components/table/DataTable';
-import Modal from 'src/components/Modal';
 import Search from 'src/components/Search.tsx';
 import useSearch from 'src/hooks/useSearch.tsx';
+import { useFetchUsersRoleMapping } from 'src/hooks/services/useFetchUsersRoleMapping.tsx';
+import DashboardCard from 'src/pages/Dashboard/components/DashboardCard.tsx';
+import Event from 'src/pages/Dashboard/components/Event';
 
 const columns: ColumnDef<ActivityLog>[] = [
   {
@@ -27,72 +30,43 @@ const columns: ColumnDef<ActivityLog>[] = [
       </span>
     ),
   },
-  { accessorKey: 'role', header: 'Role' },
-  { accessorKey: 'message', header: 'Message' },
   { accessorKey: 'raisedBy', header: 'Raised by' },
   { accessorKey: 'approvedBy', header: 'Approved by' },
-  { accessorKey: 'id', header: 'ID' },
+  { accessorKey: 'role', header: 'Role' },
+  { accessorKey: 'message', header: 'Message' },
 ];
-
-const EventItem = ({ id }: { id: string }) => {
-  const { data, isLoading } = useFetchEvent(id);
-
-  if (isLoading) {
-    return <Skeleton variant="text" width="100%" />;
-  }
-
-  return (
-    <Stack gap={1}>
-      <Typography variant="body2" color="textSecondary">
-        <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
-          {JSON.stringify(data, null, 2)}
-        </pre>
-      </Typography>
-    </Stack>
-  );
-};
-
-type CardProps = {
-  title: string;
-  count: number;
-  icon: React.ReactNode;
-};
-
-const DashboardCard: React.FC<CardProps> = ({ title, count, icon }) => {
-  return (
-    <Card sx={{ p: 2, flex: '1' }}>
-      <Stack gap={2} flexDirection="row" alignItems="center">
-        <Box
-          sx={{
-            p: 3,
-            borderRadius: '10px',
-          }}
-        >
-          {icon}
-        </Box>
-        <Stack gap={1}>
-          <Typography variant="body1">{title}</Typography>
-          <Typography variant="h2" component="span" color="primary">
-            {count}
-          </Typography>
-        </Stack>
-      </Stack>
-    </Card>
-  );
-};
 
 const Dashboard = () => {
   const [query, setQuery] = useState<string>('');
-  const [selectedEvent, setSelectedEvent] = useState<ActivityLog | null>(null);
+  const [selectedLog, setSelectedLog] = useState<ActivityLog | null>(null);
 
   const { data, isLoading } = useFetchActivityLogs();
   const { data: roles, isLoading: isRolesLoading } = useFetchAccessRoles();
   const { data: requests, isLoading: isRequestsLoading } =
     useFetchAccessRequests();
+  const { data: users, isLoading: isUsersLoading } = useFetchUsersRoleMapping({
+    enabled: true,
+  });
 
   const filteredData = useSearch<ActivityLog>(data, query);
 
-  const loading = isLoading || isRolesLoading || isRequestsLoading;
+  const activeRequestsCount = requests
+    ? requests.filter(
+        (req) => req.status?.status === AccessRequestStatus.PENDING,
+      ).length
+    : 0;
+
+  const usersByRole =
+    roles
+      ?.filter((role) => role.annotations?.['dashboard.passage.io/enabled'])
+      .map((role) => ({
+        name: role.name,
+        count:
+          users?.filter((user) => user?.roles?.includes(role.name)).length || 0,
+      })) || [];
+
+  const loading =
+    isLoading || isRolesLoading || isRequestsLoading || isUsersLoading;
   const noData = !loading && filteredData?.length === 0;
 
   return (
@@ -103,34 +77,44 @@ const Dashboard = () => {
         useFlexGap
         gap={2}
         spacing={2}
+        flexWrap="wrap"
       >
         {loading ? (
-          [...Array(3)].map((_, idx) => (
+          [...Array(4)].map((_, idx) => (
             <Skeleton
               key={idx}
               variant="rounded"
               width={'100%'}
               height={120}
               animation="wave"
+              sx={{
+                flex: '1 1 calc(25% - 16px)',
+                minWidth: 220,
+              }}
             />
           ))
         ) : (
           <>
             <DashboardCard
               title="Active requests"
-              count={requests?.length || 0}
-              icon={<PeopleAltTwoToneIcon />}
+              count={activeRequestsCount || 0}
+              icon={<VpnKeyTwoToneIcon />}
             />
+
             <DashboardCard
               title="Users"
-              count={roles?.length || 0}
+              count={users?.length || 0}
               icon={<PeopleAltTwoToneIcon />}
             />
-            <DashboardCard
-              title={`Role "Test"`}
-              count={roles?.length || 0}
-              icon={<PeopleAltTwoToneIcon />}
-            />
+
+            {usersByRole.map(({ name, count }) => (
+              <DashboardCard
+                key={name}
+                title={name}
+                count={count}
+                icon={<ManageAccountsTwoToneIcon />}
+              />
+            ))}
           </>
         )}
       </Stack>
@@ -157,20 +141,16 @@ const Dashboard = () => {
         <DataTable
           columns={columns}
           data={filteredData || []}
-          onRowClick={(row) => setSelectedEvent(row)}
+          onRowClick={(row) => setSelectedLog(row)}
         />
       )}
-
-      <Modal
-        open={!!selectedEvent}
-        onClose={() => setSelectedEvent(null)}
-        title="Event Details"
-        copyText={
-          selectedEvent ? JSON.stringify(selectedEvent, null, 2) : undefined
-        }
-      >
-        {selectedEvent && <EventItem id={selectedEvent.eventId} />}
-      </Modal>
+      {selectedLog?.eventId && (
+        <Event
+          id={selectedLog.eventId}
+          open={!!selectedLog}
+          onClose={() => setSelectedLog(null)}
+        />
+      )}
     </Stack>
   );
 };

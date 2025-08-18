@@ -1,4 +1,10 @@
 export type AccessRole = {
+  annotations: {
+    'dashboard.passage.io/dataType': 'sum' | 'avg' | 'count';
+    'dashboard.passage.io/enabled': 'true' | 'false';
+    'dashboard.passage.io/icon': string;
+    'dashboard.passage.io/widgetType': 'statCard' | 'chart' | 'table';
+  };
   name: string;
   description: string;
   tags: string[];
