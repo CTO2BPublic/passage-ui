@@ -17,7 +17,12 @@ const Event: React.FC<Props> = ({ id, open, onClose }) => {
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Event Details">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Event Details"
+      copyText={data ? JSON.stringify(data, null, 2) : undefined}
+    >
       <Stack gap={1}>
         <Typography variant="body2" color="textSecondary">
           <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
