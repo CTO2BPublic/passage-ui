@@ -76,8 +76,10 @@ export enum Provider {
   AWS = 'aws',
   AZURE = 'azure',
   GITLAB = 'gitlab',
+  GITHUB = 'github',
   GOOGLE = 'google',
   TELEPORT = 'teleport',
+  CLOUDFLARE = 'cloudflare',
 }
 
 export type User = {

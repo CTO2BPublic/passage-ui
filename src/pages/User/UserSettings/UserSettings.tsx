@@ -16,17 +16,21 @@ import { useEffect } from 'react';
 import CardActions from '@mui/material/CardActions';
 import AwsIcon from 'src/assets/icons/AwsIcon';
 import GitlabIcon from 'src/assets/icons/GitlabIcon';
+import GithubIcon from 'src/assets/icons/GithubIcon';
 import GoogleIcon from 'src/assets/icons/GoogleIcon';
 import TeleportIcon from 'src/assets/icons/TeleportIcon';
 import AzureIcon from 'src/assets/icons/AzureIcon';
+import CloudflareIcon from 'src/assets/icons/CloudflareIcon';
 import { Provider } from 'src/types';
 
 const providerIcon = {
   [Provider.AWS]: <AwsIcon />,
   [Provider.GITLAB]: <GitlabIcon />,
+  [Provider.GITHUB]: <GithubIcon />,
   [Provider.AZURE]: <AzureIcon />,
   [Provider.GOOGLE]: <GoogleIcon />,
   [Provider.TELEPORT]: <TeleportIcon />,
+  [Provider.CLOUDFLARE]: <CloudflareIcon />,
 };
 
 const UserSettings = () => {
