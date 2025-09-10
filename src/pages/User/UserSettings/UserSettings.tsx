@@ -21,6 +21,7 @@ import GoogleIcon from 'src/assets/icons/GoogleIcon';
 import TeleportIcon from 'src/assets/icons/TeleportIcon';
 import AzureIcon from 'src/assets/icons/AzureIcon';
 import CloudflareIcon from 'src/assets/icons/CloudflareIcon';
+import JiraIcon from 'src/assets/icons/JiraIcon';
 import { Provider } from 'src/types';
 
 const providerIcon = {
@@ -31,6 +32,7 @@ const providerIcon = {
   [Provider.GOOGLE]: <GoogleIcon />,
   [Provider.TELEPORT]: <TeleportIcon />,
   [Provider.CLOUDFLARE]: <CloudflareIcon />,
+  [Provider.JIRA]: <JiraIcon />,
 };
 
 const UserSettings = () => {
