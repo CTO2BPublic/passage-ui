@@ -80,6 +80,7 @@ export enum Provider {
   GOOGLE = 'google',
   TELEPORT = 'teleport',
   CLOUDFLARE = 'cloudflare',
+  JIRA = 'jira',
 }
 
 export type User = {
